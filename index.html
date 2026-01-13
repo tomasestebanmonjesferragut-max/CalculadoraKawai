@@ -9,7 +9,6 @@
 </head>
 <body>
 
-    <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
     <audio id="actionSound" src="https://assets.mixkit.co/active_storage/sfx/2569/2569-preview.mp3"></audio>
 
     <button id="muteBtn" class="mute-button" onclick="toggleMute()">🔊</button>
@@ -26,46 +25,45 @@
             </div>
             
             <div class="buttons">
-                <button class="btn func" onclick="appendFunc('sin')">sin</button>
-                <button class="btn func" onclick="appendFunc('cos')">cos</button>
-                <button class="btn func" onclick="appendFunc('tan')">tan</button>
-                <button class="btn func" onclick="appendFunc('sqrt')">√</button>
+                <button class="btn func" onmousedown="appendFunc('sin')">sin</button>
+                <button class="btn func" onmousedown="appendFunc('cos')">cos</button>
+                <button class="btn func" onmousedown="appendFunc('tan')">tan</button>
+                <button class="btn func" onmousedown="appendFunc('sqrt')">√</button>
 
-                <button class="btn func" onclick="appendFunc('log')">log</button>
-                <button class="btn func" onclick="appendToDisplay('(')">(</button>
-                <button class="btn func" onclick="appendToDisplay(')')">)</button>
-                <button class="btn func" onclick="appendToDisplay('**')">^</button>
+                <button class="btn func" onmousedown="appendFunc('log')">log</button>
+                <button class="btn func" onmousedown="appendToDisplay('(')">(</button>
+                <button class="btn func" onmousedown="appendToDisplay(')')">)</button>
+                <button class="btn func" onmousedown="appendToDisplay('**')">^</button>
 
-                <button class="btn clear" onclick="clearDisplay()">AC</button>
-                <button class="btn delete" onclick="deleteLast()">DEL</button>
-                <button class="btn operator" onclick="appendToDisplay('%')">%</button>
-                <button class="btn operator" onclick="appendToDisplay('/')">÷</button>
+                <button class="btn clear" onmousedown="clearDisplay()">AC</button>
+                <button class="btn delete" onmousedown="deleteLast()">DEL</button>
+                <button class="btn operator" onmousedown="appendToDisplay('%')">%</button>
+                <button class="btn operator" onmousedown="appendToDisplay('/')">÷</button>
                 
-                <button class="btn number" onclick="appendToDisplay('7')">7</button>
-                <button class="btn number" onclick="appendToDisplay('8')">8</button>
-                <button class="btn number" onclick="appendToDisplay('9')">9</button>
-                <button class="btn operator" onclick="appendToDisplay('*')">×</button>
+                <button class="btn number" onmousedown="appendToDisplay('7')">7</button>
+                <button class="btn number" onmousedown="appendToDisplay('8')">8</button>
+                <button class="btn number" onmousedown="appendToDisplay('9')">9</button>
+                <button class="btn operator" onmousedown="appendToDisplay('*')">×</button>
 
-                <button class="btn number" onclick="appendToDisplay('4')">4</button>
-                <button class="btn number" onclick="appendToDisplay('5')">5</button>
-                <button class="btn number" onclick="appendToDisplay('6')">6</button>
-                <button class="btn operator" onclick="appendToDisplay('-')">-</button>
+                <button class="btn number" onmousedown="appendToDisplay('4')">4</button>
+                <button class="btn number" onmousedown="appendToDisplay('5')">5</button>
+                <button class="btn number" onmousedown="appendToDisplay('6')">6</button>
+                <button class="btn operator" onmousedown="appendToDisplay('-')">-</button>
 
-                <button class="btn number" onclick="appendToDisplay('1')">1</button>
-                <button class="btn number" onclick="appendToDisplay('2')">2</button>
-                <button class="btn number" onclick="appendToDisplay('3')">3</button>
-                <button class="btn operator" onclick="appendToDisplay('+')">+</button>
+                <button class="btn number" onmousedown="appendToDisplay('1')">1</button>
+                <button class="btn number" onmousedown="appendToDisplay('2')">2</button>
+                <button class="btn number" onmousedown="appendToDisplay('3')">3</button>
+                <button class="btn operator" onmousedown="appendToDisplay('+')">+</button>
 
-                <button class="btn number zero" onclick="appendToDisplay('0')">0</button>
-                <button class="btn number" onclick="appendToDisplay('.')">.</button>
-                <button class="btn equal" onclick="calculate()">=</button>
+                <button class="btn number zero" onmousedown="appendToDisplay('0')">0</button>
+                <button class="btn number" onmousedown="appendToDisplay('.')">.</button>
+                <button class="btn equal" onmousedown="calculate()">=</button>
             </div>
         </div>
     </div>
 
     <script>
         const display = document.getElementById('display');
-        const clickSound = document.getElementById('clickSound');
         const actionSound = document.getElementById('actionSound');
         let isMuted = false;
 
@@ -74,36 +72,34 @@
             document.getElementById('muteBtn').innerText = isMuted ? "🔇" : "🔊";
         }
 
-        function playSound(isAction = false) {
+        // Solo reproduce sonido para acciones especiales
+        function playActionSound() {
             if (isMuted) return;
-            const sound = isAction ? actionSound : clickSound;
-            sound.currentTime = 0;
-            sound.play().catch(() => {});
+            actionSound.currentTime = 0;
+            actionSound.play().catch(() => {});
         }
 
         function appendToDisplay(input) {
-            playSound();
             if (display.value === '0') display.value = '';
             display.value += input;
         }
 
         function appendFunc(func) {
-            playSound();
             display.value += func + '(';
         }
 
         function clearDisplay() {
-            playSound(true);
+            playActionSound();
             display.value = '';
         }
 
         function deleteLast() {
-            playSound(true);
+            playActionSound();
             display.value = display.value.slice(0, -1);
         }
 
         function calculate() {
-            playSound(true);
+            playActionSound();
             try {
                 let expression = display.value
                     .replace(/sin/g, 'Math.sin')
@@ -113,7 +109,8 @@
                     .replace(/log/g, 'Math.log10');
                 
                 let result = eval(expression);
-                display.value = Number.isInteger(result) ? result : result.toFixed(4);
+                // Si el resultado es un número muy largo, lo limitamos
+                display.value = Number.isInteger(result) ? result : parseFloat(result.toFixed(8));
             } catch (e) {
                 display.value = 'Error 🥺';
             }
