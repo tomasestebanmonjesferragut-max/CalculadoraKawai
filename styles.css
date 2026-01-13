@@ -80,12 +80,18 @@ button.btn {
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.1s;
+    /* Transición más rápida para mayor fluidez */
+    transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
     box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+    /* Previene la selección de texto al tocar rápido */
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
-button.btn:active { transform: translateY(4px); box-shadow: 0 0 0 rgba(0,0,0,0.1); }
-
+button.btn:active {
+    transform: translateY(2px); /* Menos desplazamiento para que se sienta más sólido */
+    box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+}
 .number { background-color: var(--btn-number); }
 .operator { background-color: var(--btn-op); color: white; }
 .func { background-color: var(--btn-func); border-radius: 20px; }
